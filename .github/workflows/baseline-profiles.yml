@@ -8,21 +8,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: set up JDK
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: temurin
           java-version: 11
-          distribution: zulu
-          cache: gradle
 
-      - name: Generate baseline profile
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Grant Permissions to gradlew
+        run: chmod +x gradlew
+
+      - name: Clean Managed Devices
+        run: ./gradlew cleanManagedDevices --unused-only
+
+      - name: Generate Baseline Profile
+        run: ./gradlew :benchmark:pixel6Api31BenchmarkAndroidTest -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile -Dorg.gradle.workers.max=4
+
+      - name: Move & Rename Baseline Profiles
         run: |
-          ./gradlew :benchmark:cleanManagedDevices --unused-only
-          ./gradlew :benchmark:pixel2Api31BenchmarkAndroidTest -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
-          mv benchmark/build/outputs/managed_device_android_test_additional_output/pixel2Api31/BaselineProfileGenerator_generate-baseline-prof.txt app/src/main/baseline-prof.txt
+          mv -f benchmark/build/outputs/managed_device_android_test_additional_output/pixel6Api31/BaselineProfileGenerator_startup-baseline-prof.txt app/src/main/baseline-prof.txt
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v4
