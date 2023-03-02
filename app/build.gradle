@@ -41,7 +41,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
+        staging {
+            applicationIdSuffix ".staging"
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            debuggable true
+        }
+
         debug {
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
             minifyEnabled false
             debuggable true
         }
@@ -54,15 +63,15 @@ android {
         }
     }
 
-    productFlavors {
-        stg {
-            applicationIdSuffix ".stg"
-            signingConfig signingConfigs.debug
-        }
-        prd {
-            signingConfig signingConfigs.release
-        }
-    }
+//    productFlavors {
+//        stg {
+//            applicationIdSuffix ".stg"
+//            signingConfig signingConfigs.debug
+//        }
+//        prd {
+//            signingConfig signingConfigs.release
+//        }
+//    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

@@ -24,7 +24,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEBUGGABLE"
-        missingDimensionStrategy("default", "prd")
     }
 
     buildTypes {
